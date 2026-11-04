@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SF Work Match</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--cream:#f7f1e3;--paper:#fffaf0;--ink:#17171a;--muted:#5b5a58;--orange:#e8552b;--blue:#2d5bd8;--yellow:#f2b632;--teal:#2fa59a;--line:#e2d8c3}
+*{box-sizing:border-box}
+body{margin:0;background:var(--cream);color:var(--ink);font-family:Inter,system-ui,sans-serif;line-height:1.5}
+h1,h2,h3{font-family:"Archivo Black",Impact,sans-serif;letter-spacing:-.4px;margin:0 0 .35em}
+.wrap{max-width:1120px;margin:0 auto;padding:0 16px}
+header{padding:40px 0 24px;border-bottom:3px solid var(--ink);position:relative;overflow:hidden}
+.sun{position:absolute;right:-60px;top:-70px;width:230px;height:230px;border-radius:50%;background:var(--orange)}
+header h1{font-size:clamp(2.2rem,6vw,4rem);line-height:.95;position:relative}
+header p{max-width:660px;font-size:1.05rem;position:relative}
+.tag{display:inline-block;background:var(--ink);color:var(--cream);padding:3px 11px;border-radius:999px;font-size:.75rem;font-weight:700;margin-bottom:14px;position:relative}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-top:18px;position:relative}
+.fact{background:var(--paper);border:2px solid var(--ink);border-radius:12px;padding:10px 12px}
+.fact b{font-family:"Archivo Black";font-size:1.35rem;display:block}
+.fact small{color:var(--muted);font-size:.72rem;display:block}
+.fact a{color:var(--muted)}
+main{padding:24px 0 60px}
+.layout{display:grid;grid-template-columns:340px 1fr;gap:20px;align-items:start}
+@media(max-width:860px){.layout{grid-template-columns:1fr}}
+.card{background:var(--paper);border:2px solid var(--ink);border-radius:16px;padding:18px;box-shadow:5px 5px 0 var(--ink)}
+.side{position:sticky;top:12px}
+@media(max-width:860px){.side{position:static}}
+label{font-weight:700;font-size:.85rem;display:block;margin:12px 0 6px}
+input,select,textarea{font:inherit;width:100%;padding:9px 11px;border:2px solid var(--ink);border-radius:10px;background:#fff;color:var(--ink)}
+button{font:inherit;font-weight:700;cursor:pointer;border:2px solid var(--ink);border-radius:10px;padding:8px 14px;background:var(--yellow);color:var(--ink);box-shadow:3px 3px 0 var(--ink)}
+button:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
+button.hot{background:var(--orange);color:#fff}button.alt{background:var(--paper)}
+button:disabled{opacity:.5;cursor:wait}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:.8rem;padding:5px 10px;border-radius:999px;box-shadow:none;background:#fff;font-weight:600}
+.chip.on{background:var(--ink);color:var(--cream)}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.note{font-size:.78rem;color:var(--muted)}
+#mstat{overflow-wrap:anywhere;flex:1 1 100%}
+.results{display:grid;gap:14px}
+.job{background:var(--paper);border:2px solid var(--ink);border-radius:14px;padding:16px}
+.job .top{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:baseline}
+.job h3{font-size:1.15rem;margin:0}
+.fn{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--blue)}
+.pills{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.pill{font-size:.75rem;font-weight:700;padding:2px 9px;border-radius:999px;border:1.5px solid var(--ink);background:#fff}
+.pill.m{background:var(--yellow)}.pill.g{background:#e3f6f3;border-color:var(--teal)}
+.match{font-family:"Archivo Black";font-size:.9rem;padding:3px 10px;border-radius:999px;background:var(--teal);color:#fff}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;font-size:.85rem}
+@media(max-width:600px){.grid3{grid-template-columns:1fr}}
+.grid3 div b{display:block;font-size:.72rem;text-transform:uppercase;color:var(--muted)}
+.plan{white-space:pre-wrap;background:#fff;border:2px dashed var(--ink);border-radius:10px;padding:12px;margin-top:10px;font-size:.88rem;display:none}
+.friction{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:28px}
+.friction .card{box-shadow:3px 3px 0 var(--ink)}
+.empty{padding:30px;text-align:center;color:var(--muted)}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <div class="sun"></div>
+  <span class="tag">MAKE SF BETTER · BUILT WITH MISTRAL</span>
+  <h1>SF WORK MATCH</h1>
+  <p>Search by what you can do, not by your resume. Every role here helps the city run, and each one shows how fast you can start and how you get paid.</p>
+  <div class="facts" id="facts"></div>
+</div></header>
+
+<main class="wrap">
+<div class="layout">
+  <aside class="card side">
+    <h2 style="font-size:1.3rem">What can you do?</h2>
+    <label>Tell us in your own words (any language)</label>
+    <textarea id="free" rows="3" placeholder="e.g. I drive, I speak Cantonese, I used to cook at a restaurant"></textarea>
+    <div class="row"><button class="hot" id="matchBtn">Match me</button><span class="note" id="mstat"></span></div>
+    <label>Or pick your abilities</label>
+    <div class="chips" id="chips"></div>
+    <label>City function</label>
+    <select id="fFn"><option value="">All</option></select>
+    <label>I need to</label>
+    <select id="fStart"><option value="">Any start time</option><option value="Days">Start within days</option><option value="weeks">Start within a few weeks</option></select>
+    <select id="fBar" style="margin-top:8px"><option value="">Any entry barrier</option><option value="Low">Low barrier only</option></select>
+    <label style="margin-top:14px">Mistral (optional)</label>
+    <input id="key" type="password" placeholder="API key, stays in this page">
+    <select id="model" style="margin-top:6px"><option>mistral-small-latest</option><option>mistral-medium-latest</option><option>mistral-large-latest</option></select>
+    <p class="note">Without a key, matching uses keywords. With a key, Mistral reads your words in any language and writes a 7-day start plan.</p>
+    <button class="alt" id="reset" style="margin-top:6px">Clear</button>
+  </aside>
+
+  <section>
+    <div class="row" style="margin:0 0 12px;justify-content:space-between;align-items:center">
+      <b id="count"></b><span class="note">Roles describe types of work, not live openings. Check each employer for current postings and pay.</span>
+    </div>
+    <div class="results" id="results"></div>
+
+    <h2 style="margin-top:36px">Removing the friction</h2>
+    <div class="friction">
+      <div class="card"><h3>One profile</h3><p>Abilities, languages and availability entered once and reused for every application, instead of retyping a resume.</p></div>
+      <div class="card"><h3>Skills over degrees</h3><p>Every role lists its real requirement. Most need no degree; many train you on the job.</p></div>
+      <div class="card"><h3>Fair chance</h3><p>San Francisco's Fair Chance Ordinance limits when employers can ask about conviction history. Roles that value lived experience say so.</p></div>
+      <div class="card"><h3>Paid fast</h3><p>Each role shows how pay arrives: weekly payroll, per job, or instant payout. Filter for work that pays this week.</p></div>
+    </div>
+  </section>
+</div>
+</main>
+
+<script>
+const DATA={"abilities": {"hands": "Physical / hands-on work", "drive": "Driving", "people": "Talking with people", "care": "Caring for others", "cook": "Cooking / food", "fix": "Fixing & building", "organize": "Organizing / logistics", "lang": "Speaks a second language", "teach": "Teaching / coaching", "write": "Writing", "design": "Design / visual", "code": "Coding", "data": "Data / spreadsheets", "numbers": "Bookkeeping / numbers", "calm": "Staying calm in tense situations", "outdoor": "Working outdoors", "sell": "Selling", "tech": "Phone & computer basics", "lived": "Lived experience (recovery, housing, reentry)", "art": "Art / music / performance"}, "roles": [{"role_id": "J001", "city_function": "Streets & public space", "role": "Street cleaning crew member", "abilities": "Physical / hands-on work;Working outdoors", "ability_tags": "hands;outdoor", "entry_barrier": "Low", "credentials_needed": "None", "fastest_start": "Days", "how_paid": "Weekly payroll", "friction_removed": "No degree; skills-based hiring", "who_hires": "City contractors, community benefit districts"}, {"role_id": "J002", "city_function": "Streets & public space", "role": "Graffiti abatement tech", "abilities": "Physical / hands-on work;Working outdoors;Fixing & building", "ability_tags": "hands;outdoor;fix", "entry_barrier": "Low", "credentials_needed": "Short training", "fastest_start": "Days", "how_paid": "Weekly payroll", "friction_removed": "No degree", "who_hires": "City contractors, property owners"}, {"role_id": "J003", "city_function": "Streets & public space", "role": "Tree & landscape worker", "abilities": "Physical / hands-on work;Working outdoors", "ability_tags": "hands;outdoor", "entry_barrier": "Low", "credentials_needed": "Short training", "fastest_start": "Days", "how_paid": "Weekly payroll", "friction_removed": "No degree", "who_hires": "Parks, landscaping firms"}, {"role_id": "J004", "city_function": "Streets & public space", "role": "Sidewalk & curb repair helper", "abilities": "Physical / hands-on work;Fixing & building;Working outdoors", "ability_tags": "hands;fix;outdoor", "entry_barrier": "Low", "credentials_needed": "Safety training", "fastest_start": "1-2 weeks", "how_paid": "Weekly payroll", "friction_removed": "Apprenticeship path", "who_hires": "Public works contractors"}, {"role_id": "J005", "city_function": "Safety & community", "role": "Community ambassador", "abilities": "Talking with people;Staying calm in tense situations;Speaks a second language;Working outdoors", "ability_tags": "people;calm;lang;outdoor", "entry_barrier": "Low", "credentials_needed": "De-escalation training", "fastest_start": "1-2 weeks", "how_paid": "Weekly payroll", "friction_removed": "Fair-chance hiring", "who_hires": "Community benefit districts, nonprofits"}, {"role_id": "J006", "city_function": "Safety & community", "role": "Peer outreach worker", "abilities": "Talking with people;Staying calm in tense situations;Lived experience (recovery, housing, reentry);Caring for others", "ability_tags": "people;calm;lived;care", "entry_barrier": "Low", "credentials_needed": "Peer certification (often employer-paid)", "fastest_start": "2-4 weeks", "how_paid": "Weekly payroll", "friction_removed": "Lived experience counts as a qualification", "who_hires": "Health nonprofits, city health programs"}, {"role_id": "J007", "city_function": "Safety & community", "role": "Event & venue safety staff", "abilities": "Talking with people;Staying calm in tense situations", "ability_tags": "people;calm", "entry_barrier": "Low", "credentials_needed": "Guard card where required", "fastest_start": "1-2 weeks", "how_paid": "Weekly / per shift", "friction_removed": "Shift-based, flexible hours", "who_hires": "Venues, event companies"}, {"role_id": "J008", "city_function": "Safety & community", "role": "Crossing guard / school safety", "abilities": "Talking with people;Working outdoors;Staying calm in tense situations", "ability_tags": "people;outdoor;calm", "entry_barrier": "Low", "credentials_needed": "Background check", "fastest_start": "2-4 weeks", "how_paid": "Biweekly payroll", "friction_removed": "Part-time friendly", "who_hires": "Schools, transit agency"}, {"role_id": "J009", "city_function": "Health & recovery", "role": "Recovery coach", "abilities": "Talking with people;Caring for others;Lived experience (recovery, housing, reentry);Staying calm in tense situations", "ability_tags": "people;care;lived;calm", "entry_barrier": "Low", "credentials_needed": "Peer/recovery coach certificate", "fastest_start": "2-6 weeks", "how_paid": "Biweekly payroll", "friction_removed": "Lived experience valued", "who_hires": "Treatment programs, clinics"}, {"role_id": "J010", "city_function": "Health & recovery", "role": "Home care aide", "abilities": "Caring for others;Talking with people", "ability_tags": "care;people", "entry_barrier": "Low", "credentials_needed": "Short certification", "fastest_start": "1-3 weeks", "how_paid": "Weekly payroll", "friction_removed": "Flexible schedules", "who_hires": "Home care agencies, families"}, {"role_id": "J011", "city_function": "Health & recovery", "role": "Medical interpreter", "abilities": "Speaks a second language;Talking with people", "ability_tags": "lang;people", "entry_barrier": "Medium", "credentials_needed": "Interpreter certification", "fastest_start": "1-3 months", "how_paid": "Per hour / per call", "friction_removed": "Remote work possible", "who_hires": "Hospitals, clinics, interpreting agencies"}, {"role_id": "J012", "city_function": "Health & recovery", "role": "Clinic front desk & navigator", "abilities": "Talking with people;Phone & computer basics;Organizing / logistics", "ability_tags": "people;tech;organize", "entry_barrier": "Low", "credentials_needed": "None", "fastest_start": "1-2 weeks", "how_paid": "Biweekly payroll", "friction_removed": "No degree", "who_hires": "Clinics, health nonprofits"}, {"role_id": "J013", "city_function": "Housing", "role": "Building maintenance tech", "abilities": "Fixing & building;Physical / hands-on work", "ability_tags": "fix;hands", "entry_barrier": "Low", "credentials_needed": "On-the-job training", "fastest_start": "Days", "how_paid": "Weekly payroll", "friction_removed": "Apprenticeship path", "who_hires": "Property managers, supportive housing"}, {"role_id": "J014", "city_function": "Housing", "role": "Construction trades apprentice", "abilities": "Fixing & building;Physical / hands-on work;Working outdoors", "ability_tags": "fix;hands;outdoor", "entry_barrier": "Low", "credentials_needed": "Apprenticeship enrollment", "fastest_start": "2-6 weeks", "how_paid": "Weekly payroll; paid while training", "friction_removed": "Earn while you learn", "who_hires": "Union apprenticeships, contractors"}, {"role_id": "J015", "city_function": "Housing", "role": "Supportive housing desk clerk", "abilities": "Talking with people;Staying calm in tense situations;Organizing / logistics", "ability_tags": "people;calm;organize", "entry_barrier": "Low", "credentials_needed": "None", "fastest_start": "1-2 weeks", "how_paid": "Biweekly payroll", "friction_removed": "Fair-chance hiring", "who_hires": "Supportive housing operators"}, {"role_id": "J016", "city_function": "Housing", "role": "Move-in / furniture setup crew", "abilities": "Physical / hands-on work;Organizing / logistics;Driving", "ability_tags": "hands;organize;drive", "entry_barrier": "Low", "credentials_needed": "None", "fastest_start": "Days", "how_paid": "Per job", "friction_removed": "Same-week pay", "who_hires": "Housing nonprofits, moving companies"}, {"role_id": "J017", "city_function": "Transit & mobility", "role": "Rideshare / delivery driver", "abilities": "Driving", "ability_tags": "drive", "entry_barrier": "Low", "credentials_needed": "License, background check, vehicle", "fastest_start": "Days", "how_paid": "Weekly or instant payout", "friction_removed": "Self-scheduled", "who_hires": "Ride and delivery platforms"}, {"role_id": "J018", "city_function": "Transit & mobility", "role": "Bus operator trainee", "abilities": "Driving;Talking with people;Staying calm in tense situations", "ability_tags": "drive;people;calm", "entry_barrier": "Medium", "credentials_needed": "Commercial license (often employer-trained)", "fastest_start": "1-3 months", "how_paid": "Biweekly payroll", "friction_removed": "Paid training", "who_hires": "Transit agency"}, {"role_id": "J019", "city_function": "Transit & mobility", "role": "Bike & scooter fleet mechanic", "abilities": "Fixing & building;Physical / hands-on work", "ability_tags": "fix;hands", "entry_barrier": "Low", "credentials_needed": "Short training", "fastest_start": "Days", "how_paid": "Weekly payroll", "friction_removed": "No degree", "who_hires": "Micromobility operators, bike shops"}, {"role_id": "J020", "city_function": "Transit & mobility", "role": "Station & stop ambassador", "abilities": "Talking with people;Speaks a second language;Staying calm in tense situations", "ability_tags": "people;lang;calm", "entry_barrier": "Low", "credentials_needed": "None", "fastest_start": "1-2 weeks", "how_paid": "Weekly payroll", "friction_removed": "Part-time friendly", "who_hires": "Transit agencies, contractors"}, {"role_id": "J021", "city_function": "Food", "role": "Line cook / prep cook", "abilities": "Cooking / food;Physical / hands-on work", "ability_tags": "cook;hands", "entry_barrier": "Low", "credentials_needed": "Food handler card", "fastest_start": "Days", "how_paid": "Weekly payroll + tips", "friction_removed": "Same-week start", "who_hires": "Restaurants, catering"}, {"role_id": "J022", "city_function": "Food", "role": "Commissary / meal program cook", "abilities": "Cooking / food;Organizing / logistics", "ability_tags": "cook;organize", "entry_barrier": "Low", "credentials_needed": "Food handler card", "fastest_start": "Days", "how_paid": "Weekly payroll", "friction_removed": "Mission-driven hiring", "who_hires": "Meal programs, nonprofits"}, {"role_id": "J023", "city_function": "Food", "role": "Street food / pop-up vendor", "abilities": "Cooking / food;Selling", "ability_tags": "cook;sell", "entry_barrier": "Medium", "credentials_needed": "Health permit, business registration", "fastest_start": "2-8 weeks", "how_paid": "Daily sales", "friction_removed": "Own business; small-business fee waivers may apply", "who_hires": "Self-employed"}, {"role_id": "J024", "city_function": "Food", "role": "Corporate catering assistant", "abilities": "Cooking / food;Talking with people;Organizing / logistics", "ability_tags": "cook;people;organize", "entry_barrier": "Low", "credentials_needed": "Food handler card", "fastest_start": "Days", "how_paid": "Per event", "friction_removed": "Gig-friendly", "who_hires": "Caterers serving offices"}, {"role_id": "J025", "city_function": "Education & childcare", "role": "Tutor", "abilities": "Teaching / coaching;Talking with people", "ability_tags": "teach;people", "entry_barrier": "Low", "credentials_needed": "Background check", "fastest_start": "Days", "how_paid": "Per session", "friction_removed": "Online or in person", "who_hires": "Families, schools, tutoring platforms"}, {"role_id": "J026", "city_function": "Education & childcare", "role": "Childcare assistant", "abilities": "Caring for others;Teaching / coaching", "ability_tags": "care;teach", "entry_barrier": "Low", "credentials_needed": "Background check, CPR", "fastest_start": "1-3 weeks", "how_paid": "Biweekly payroll", "friction_removed": "Entry path into early education", "who_hires": "Childcare centers"}, {"role_id": "J027", "city_function": "Education & childcare", "role": "After-school program leader", "abilities": "Teaching / coaching;Talking with people;Art / music / performance", "ability_tags": "teach;people;art", "entry_barrier": "Low", "credentials_needed": "Background check", "fastest_start": "1-3 weeks", "how_paid": "Biweekly payroll", "friction_removed": "Part-time friendly", "who_hires": "Rec centers, nonprofits"}, {"role_id": "J028", "city_function": "Education & childcare", "role": "Adult ESL / digital skills coach", "abilities": "Teaching / coaching;Speaks a second language;Phone & computer basics", "ability_tags": "teach;lang;tech", "entry_barrier": "Low", "credentials_needed": "None", "fastest_start": "1-2 weeks", "how_paid": "Per session", "friction_removed": "Remote possible", "who_hires": "Libraries, community colleges, nonprofits"}, {"role_id": "J029", "city_function": "Small business & retail", "role": "Retail associate", "abilities": "Selling;Talking with people", "ability_tags": "sell;people", "entry_barrier": "Low", "credentials_needed": "None", "fastest_start": "Days", "how_paid": "Weekly / biweekly payroll", "friction_removed": "Same-week start", "who_hires": "Shops, retailers"}, {"role_id": "J030", "city_function": "Small business & retail", "role": "Storefront pop-up operator", "abilities": "Selling;Organizing / logistics;Art / music / performance", "ability_tags": "sell;organize;art", "entry_barrier": "Medium", "credentials_needed": "Business registration, lease/permit", "fastest_start": "2-8 weeks", "how_paid": "Daily sales", "friction_removed": "Vacant storefront programs", "who_hires": "Self-employed"}, {"role_id": "J031", "city_function": "Small business & retail", "role": "Small business bookkeeper", "abilities": "Bookkeeping / numbers;Data / spreadsheets;Organizing / logistics", "ability_tags": "numbers;data;organize", "entry_barrier": "Low", "credentials_needed": "None (certificate helps)", "fastest_start": "Days", "how_paid": "Per client monthly", "friction_removed": "Remote, flexible", "who_hires": "Small businesses"}, {"role_id": "J032", "city_function": "Small business & retail", "role": "Social media helper for local shops", "abilities": "Writing;Design / visual;Selling", "ability_tags": "write;design;sell", "entry_barrier": "Low", "credentials_needed": "Portfolio", "fastest_start": "Days", "how_paid": "Per project", "friction_removed": "Remote, flexible", "who_hires": "Small businesses"}, {"role_id": "J033", "city_function": "Tech & AI", "role": "AI data labeler / evaluator", "abilities": "Phone & computer basics;Writing;Data / spreadsheets", "ability_tags": "tech;write;data", "entry_barrier": "Low", "credentials_needed": "Online assessment", "fastest_start": "Days", "how_paid": "Weekly / per task", "friction_removed": "Remote; skills test instead of resume", "who_hires": "AI data vendors, AI labs"}, {"role_id": "J034", "city_function": "Tech & AI", "role": "Domain expert AI trainer", "abilities": "Writing;Teaching / coaching;Data / spreadsheets", "ability_tags": "write;teach;data", "entry_barrier": "Medium", "credentials_needed": "Proof of expertise", "fastest_start": "1-2 weeks", "how_paid": "Per hour", "friction_removed": "Uses existing career knowledge", "who_hires": "AI labs, data vendors"}, {"role_id": "J035", "city_function": "Tech & AI", "role": "Freelance developer", "abilities": "Coding", "ability_tags": "code", "entry_barrier": "Medium", "credentials_needed": "Portfolio", "fastest_start": "Days", "how_paid": "Per project / invoice", "friction_removed": "Vendor-ready profile cuts screening time", "who_hires": "Startups, big tech vendors"}, {"role_id": "J036", "city_function": "Tech & AI", "role": "Product designer", "abilities": "Design / visual;Phone & computer basics", "ability_tags": "design;tech", "entry_barrier": "Medium", "credentials_needed": "Portfolio", "fastest_start": "Days", "how_paid": "Per project / invoice", "friction_removed": "Vendor-ready profile cuts screening time", "who_hires": "Tech companies"}, {"role_id": "J037", "city_function": "Tech & AI", "role": "IT support tech", "abilities": "Phone & computer basics;Fixing & building;Talking with people", "ability_tags": "tech;fix;people", "entry_barrier": "Low", "credentials_needed": "Entry certificate helps", "fastest_start": "1-2 weeks", "how_paid": "Biweekly payroll", "friction_removed": "No degree", "who_hires": "Offices, MSPs, schools"}, {"role_id": "J038", "city_function": "Arts, events & visitors", "role": "Event crew / stagehand", "abilities": "Physical / hands-on work;Organizing / logistics", "ability_tags": "hands;organize", "entry_barrier": "Low", "credentials_needed": "None", "fastest_start": "Days", "how_paid": "Per shift", "friction_removed": "Same-week pay", "who_hires": "Venues, conferences"}, {"role_id": "J039", "city_function": "Arts, events & visitors", "role": "Street performer / muralist", "abilities": "Art / music / performance", "ability_tags": "art", "entry_barrier": "Low", "credentials_needed": "Permits where required", "fastest_start": "Days", "how_paid": "Commissions / tips", "friction_removed": "Self-directed", "who_hires": "Self-employed, community districts"}, {"role_id": "J040", "city_function": "Arts, events & visitors", "role": "Tour guide", "abilities": "Talking with people;Speaks a second language;Working outdoors", "ability_tags": "people;lang;outdoor", "entry_barrier": "Low", "credentials_needed": "None", "fastest_start": "Days", "how_paid": "Per tour + tips", "friction_removed": "Self-scheduled", "who_hires": "Tour companies, self-employed"}, {"role_id": "J041", "city_function": "Arts, events & visitors", "role": "Photographer / videographer", "abilities": "Art / music / performance;Design / visual", "ability_tags": "art;design", "entry_barrier": "Low", "credentials_needed": "Portfolio", "fastest_start": "Days", "how_paid": "Per project", "friction_removed": "Gig-friendly", "who_hires": "Businesses, events"}, {"role_id": "J042", "city_function": "Repair & trades", "role": "Handyperson", "abilities": "Fixing & building;Physical / hands-on work", "ability_tags": "fix;hands", "entry_barrier": "Low", "credentials_needed": "License above state threshold", "fastest_start": "Days", "how_paid": "Per job", "friction_removed": "Same-week pay", "who_hires": "Homeowners, property managers"}, {"role_id": "J043", "city_function": "Repair & trades", "role": "Electrician / plumber apprentice", "abilities": "Fixing & building;Physical / hands-on work", "ability_tags": "fix;hands", "entry_barrier": "Medium", "credentials_needed": "Apprenticeship enrollment", "fastest_start": "1-3 months", "how_paid": "Weekly; paid while training", "friction_removed": "Earn while you learn", "who_hires": "Union apprenticeships, contractors"}, {"role_id": "J044", "city_function": "Repair & trades", "role": "Phone & laptop repair tech", "abilities": "Fixing & building;Phone & computer basics", "ability_tags": "fix;tech", "entry_barrier": "Low", "credentials_needed": "Short training", "fastest_start": "Days", "how_paid": "Per job", "friction_removed": "Low startup cost", "who_hires": "Repair shops, self-employed"}, {"role_id": "J045", "city_function": "Environment & resilience", "role": "Solar / EV charger install helper", "abilities": "Fixing & building;Physical / hands-on work;Working outdoors", "ability_tags": "fix;hands;outdoor", "entry_barrier": "Low", "credentials_needed": "Safety training", "fastest_start": "1-3 weeks", "how_paid": "Weekly payroll", "friction_removed": "Growing field, no degree", "who_hires": "Solar and EV installers"}, {"role_id": "J046", "city_function": "Environment & resilience", "role": "Recycling & compost sorter", "abilities": "Physical / hands-on work;Organizing / logistics", "ability_tags": "hands;organize", "entry_barrier": "Low", "credentials_needed": "None", "fastest_start": "Days", "how_paid": "Weekly payroll", "friction_removed": "Same-week start", "who_hires": "Recycling operators"}, {"role_id": "J047", "city_function": "Environment & resilience", "role": "Disaster preparedness volunteer leader", "abilities": "Talking with people;Organizing / logistics;Staying calm in tense situations", "ability_tags": "people;organize;calm", "entry_barrier": "Low", "credentials_needed": "City training program", "fastest_start": "2-4 weeks", "how_paid": "Unpaid / stipend", "friction_removed": "Pathway into emergency services", "who_hires": "City emergency programs"}, {"role_id": "J048", "city_function": "Care economy", "role": "Elder companion", "abilities": "Caring for others;Talking with people;Speaks a second language", "ability_tags": "care;people;lang", "entry_barrier": "Low", "credentials_needed": "Background check", "fastest_start": "Days", "how_paid": "Weekly / per visit", "friction_removed": "Flexible hours", "who_hires": "Families, care agencies"}, {"role_id": "J049", "city_function": "Care economy", "role": "Pet care / dog walker", "abilities": "Caring for others;Working outdoors", "ability_tags": "care;outdoor", "entry_barrier": "Low", "credentials_needed": "None", "fastest_start": "Days", "how_paid": "Per walk / instant payout", "friction_removed": "Self-scheduled", "who_hires": "Pet owners, pet-care platforms"}, {"role_id": "J050", "city_function": "Care economy", "role": "Personal errands / concierge", "abilities": "Driving;Organizing / logistics;Talking with people", "ability_tags": "drive;organize;people", "entry_barrier": "Low", "credentials_needed": "None", "fastest_start": "Days", "how_paid": "Per task", "friction_removed": "Self-scheduled", "who_hires": "Busy households, offices"}]};
+const FACTS=[{"value": 422958, "label": "housing units", "as_of": "End of 2025", "source": "SF Planning", "url": "https://sfplanning.org/sites/default/files/resources/2026-04/2025_Housing_Inventory.pdf"}, {"value": 97, "suffix": "K", "label": "registered businesses", "as_of": "Rounded, 2026", "source": "SF Treasurer", "url": "https://sftreasurer.org/about-us"}, {"value": 13000, "prefix": "~", "label": "city-maintained street blocks", "as_of": "Jan 2026", "source": "SF Public Works", "url": "https://sfpublicworks.org/node/35600"}, {"value": 50, "label": "role types in this catalog", "as_of": "Framework, not live openings", "source": "sf_work_catalog.csv", "url": "#"}];
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const sel=new Set();
+
+/* facts strip: sourced numbers only */
+$('#facts').innerHTML=FACTS.map(f=>`<div class="fact"><b>${f.prefix||''}${Number(f.value).toLocaleString()}${f.suffix||''}</b>${esc(f.label)}<small>${esc(f.as_of)} · <a href="${esc(f.url)}" target="_blank" rel="noopener">${esc(f.source)}</a></small></div>`).join('');
+
+/* chips + filters */
+for(const[k,v]of Object.entries(DATA.abilities)){
+  const b=document.createElement('button');b.className='chip';b.textContent=v;b.dataset.k=k;
+  b.onclick=()=>{sel.has(k)?sel.delete(k):sel.add(k);b.classList.toggle('on');render()};$('#chips').appendChild(b);
+}
+[...new Set(DATA.roles.map(r=>r.city_function))].forEach(f=>$('#fFn').insertAdjacentHTML('beforeend',`<option>${esc(f)}</option>`));
+['fFn','fStart','fBar'].forEach(id=>$('#'+id).onchange=render);
+function syncChips(){document.querySelectorAll('.chip').forEach(c=>c.classList.toggle('on',sel.has(c.dataset.k)))}
+
+/* offline keyword -> ability */
+const KW={hands:/lift|physical|clean|labor|hands|strong|warehouse|limpi|almac/,drive:/driv|car|truck|uber|lyft|deliver|license|manej|conduc|carro|coche|chofer|開車|司機/,people:/people|talk|customer|friendly|social|front desk/,care:/care|nurs|elder|child|kids|parent|patient|cuid|niñ|ancian/,cook:/cook|chef|kitchen|food|bake|restaurant|cocin|comida|restaurante|廚|煮/,fix:/fix|repair|build|construct|plumb|electr|mechanic|carpent|repar|constru|mecánic/,organize:/organiz|logistic|plan|schedul|inventory|admin/,lang:/spanish|chinese|cantonese|mandarin|tagalog|vietnamese|russian|korean|arabic|bilingual|language|translat|habl|中文|español/,teach:/teach|tutor|coach|train|mentor/,write:/writ|edit|content|copy/,design:/design|figma|graphic|ux|ui/,code:/code|coding|program|developer|software|python|javascript/,data:/data|excel|spreadsheet|sql|analy/,numbers:/bookkeep|account|numbers|finance|quickbooks/,calm:/calm|de-?escal|security|conflict|crisis/,outdoor:/outdoor|outside|garden|park|walk/,sell:/sell|sales|retail|shop|market|vend|tienda/,tech:/computer|phone|tech|laptop|it support|online/,lived:/recover|sober|reentry|homeless|unhoused|incarcerat|lived experience/,art:/art|music|paint|photo|video|perform|mural|dance/};
+function offlineTags(t){t=t.toLowerCase();return Object.keys(KW).filter(k=>KW[k].test(t))}
+
+async function mistral(system,user,json){
+  const key=$('#key').value.trim();if(!key)return null;
+  const body={model:$('#model').value,temperature:.2,messages:[{role:'system',content:system},{role:'user',content:user}]};
+  if(json)body.response_format={type:'json_object'};
+  const API=location.protocol.startsWith('http')?'/mistral/v1/chat/completions':'https://api.mistral.ai/v1/chat/completions';
+  let r;
+  for(let i=0;i<4;i++){
+    r=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},body:JSON.stringify(body)});
+    if(r.status!==429)break;
+    $('#mstat').textContent='Mistral is busy, retrying ('+(i+1)+'/3)…';
+    await new Promise(res=>setTimeout(res,1500*2**i));
+  }
+  if(!r.ok){const m={401:'key not accepted',429:'rate limit reached, wait a few seconds and try again'}[r.status]||('HTTP '+r.status);throw new Error(m)}
+  const t=(await r.json()).choices[0].message.content;return json?JSON.parse(t):t;
+}
+
+$('#matchBtn').onclick=async()=>{
+  const t=$('#free').value.trim();if(!t)return;const btn=$('#matchBtn');btn.disabled=true;$('#mstat').textContent='Matching…';
+  let tags=[];
+  try{
+    const r=await mistral(`Map a person's description of themselves (any language) to ability tags. Allowed tags: ${JSON.stringify(DATA.abilities)}. Only use tags clearly supported by what they said. Return JSON {"tags":["..."]}.`,t,true);
+    tags=r?r.tags.filter(x=>x in DATA.abilities):offlineTags(t);$('#mstat').textContent=r?'Matched by Mistral':'Keyword match';
+  }catch(e){tags=offlineTags(t);$('#mstat').textContent='Mistral error ('+e.message+'), keyword match used'}
+  tags.forEach(x=>sel.add(x));syncChips();render();btn.disabled=false;
+};
+$('#reset').onclick=()=>{sel.clear();syncChips();$('#free').value='';['fFn','fStart','fBar'].forEach(id=>$('#'+id).value='');$('#mstat').textContent='';render()};
+
+function score(r){const t=r.ability_tags.split(';');if(!sel.size)return 0;const hit=t.filter(x=>sel.has(x)).length;return hit?Math.round(hit/t.length*100):0}
+function render(){
+  const fn=$('#fFn').value,st=$('#fStart').value,bar=$('#fBar').value;
+  let rows=DATA.roles.map(r=>({...r,s:score(r)})).filter(r=>(!fn||r.city_function===fn)&&(!bar||r.entry_barrier===bar)&&(!st||(st==='Days'?r.fastest_start==='Days':/Days|week/.test(r.fastest_start)))&&(!sel.size||r.s>0));
+  rows.sort((a,b)=>b.s-a.s||(a.entry_barrier==='Low'?-1:1));
+  $('#count').textContent=`${rows.length} role${rows.length===1?'':'s'}${sel.size?' matching your abilities':''}`;
+  $('#results').innerHTML=rows.length?rows.map(r=>`
+    <div class="job">
+      <div class="top"><div><div class="fn">${esc(r.city_function)}</div><h3>${esc(r.role)}</h3></div>${r.s?`<span class="match">${r.s}% match</span>`:''}</div>
+      <div class="pills">${r.ability_tags.split(';').map(t=>`<span class="pill ${sel.has(t)?'m':''}">${esc(DATA.abilities[t])}</span>`).join('')}<span class="pill g">${esc(r.entry_barrier)} barrier</span></div>
+      <div class="grid3">
+        <div><b>Start</b>${esc(r.fastest_start)} · ${esc(r.credentials_needed)}</div>
+        <div><b>Get paid</b>${esc(r.how_paid)}</div>
+        <div><b>Who hires</b>${esc(r.who_hires)}</div>
+      </div>
+      <p class="note" style="margin:8px 0 0">Friction removed: ${esc(r.friction_removed)}</p>
+      <div class="row"><button class="alt" onclick="plan('${r.role_id}',this)">7-day start plan</button></div>
+      <div class="plan" id="p_${r.role_id}"></div>
+    </div>`).join(''):`<div class="empty card">No roles match yet. Try fewer filters or add abilities.</div>`;
+}
+async function plan(id,btn){
+  const r=DATA.roles.find(x=>x.role_id===id),el=$('#p_'+id);el.style.display='block';btn.disabled=true;
+  const fallback=`Day 1: List your relevant experience for "${r.role}" in 3 lines (no resume needed).\nDay 2: Get what's required: ${r.credentials_needed}.\nDay 3: Make a list of 5 places that hire: ${r.who_hires}.\nDay 4: Contact or apply to all 5; ask about start date and pay schedule (${r.how_paid}).\nDay 5: Set up direct deposit or a payout account so pay lands fast.\nDay 6: Follow up on every application.\nDay 7: Accept the first good offer; keep applying for better ones.`;
+  try{
+    const out=await mistral(`You write short, practical 7-day plans to start a job in San Francisco. Use only the role facts given; do not invent specific employers, wages or program names. Reply in the same language the person used in their description, or English if none. Plain text, one line per day.`,`Role facts: ${JSON.stringify(r)}\nPerson's description: ${$('#free').value||'(none)'}`,false);
+    el.textContent=out||fallback;
+  }catch(e){el.textContent=fallback}
+  btn.disabled=false;
+}
+render();
+</script>
+</body>
+</html>

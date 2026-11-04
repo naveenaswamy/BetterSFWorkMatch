@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gold Rush of Happiness</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--cream:#f7f1e3;--paper:#fffaf0;--ink:#17171a;--muted:#5b5a58;--orange:#e8552b;--blue:#2d5bd8;--yellow:#f2b632;--teal:#2fa59a}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--cream);color:var(--ink);font-family:Inter,system-ui,sans-serif;overflow:hidden}
+h1,h2{font-family:"Archivo Black",Impact,sans-serif;margin:0;letter-spacing:-1px;line-height:.95}
+.stage{position:fixed;inset:0;display:grid;place-items:center;padding:24px 24px 110px}
+.scene{position:absolute;inset:0;padding:6vh 6vw 120px;display:flex;flex-direction:column;justify-content:center;gap:3vh;opacity:0;transform:translateY(24px);transition:opacity .7s,transform .7s;pointer-events:none}
+.scene.on{opacity:1;transform:none}
+.big{font-size:clamp(2.4rem,7.5vw,6.5rem)}
+.mid{font-size:clamp(1.8rem,4.6vw,3.8rem)}
+.lead{font-size:clamp(1.1rem,2.2vw,1.7rem);max-width:900px}
+.sun{position:fixed;right:-8vw;top:-12vw;width:34vw;height:34vw;border-radius:50%;background:var(--orange);z-index:-1;transition:transform 2s}
+.stripe{position:fixed;left:0;right:0;bottom:92px;height:12px;background:repeating-linear-gradient(90deg,var(--orange) 0 40px,var(--blue) 40px 80px,var(--yellow) 80px 120px)}
+.tag{display:inline-block;background:var(--ink);color:var(--cream);padding:6px 14px;border-radius:999px;font-weight:700;font-size:clamp(.8rem,1.3vw,1rem);width:max-content}
+.row{display:flex;gap:2vw;flex-wrap:wrap}
+.box{background:var(--paper);border:3px solid var(--ink);border-radius:18px;padding:2.2vh 2vw;box-shadow:6px 6px 0 var(--ink);min-width:200px;flex:1;opacity:0;transform:translateY(16px);transition:opacity .5s,transform .5s}
+.on .box{opacity:1;transform:none}
+.on .box:nth-child(2){transition-delay:.25s}.on .box:nth-child(3){transition-delay:.5s}.on .box:nth-child(4){transition-delay:.75s}.on .box:nth-child(5){transition-delay:1s}.on .box:nth-child(6){transition-delay:1.25s}
+.box b{font-family:"Archivo Black";font-size:clamp(1.6rem,3.4vw,3rem);display:block}
+.box span{font-size:clamp(.95rem,1.6vw,1.3rem)}
+.box small{display:block;color:var(--muted);margin-top:4px}
+.emoji{font-size:clamp(2rem,4vw,3.4rem);display:block;margin-bottom:6px}
+.input{background:#fff;border:3px solid var(--ink);border-radius:16px;padding:2.4vh 2vw;font-size:clamp(1.3rem,2.8vw,2.3rem);min-height:13vh;max-width:1000px}
+.caret{display:inline-block;width:3px;height:1em;background:var(--ink);vertical-align:-.1em;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.btn{font-family:Inter;font-weight:800;font-size:clamp(1rem,1.8vw,1.4rem);border:3px solid var(--ink);border-radius:14px;padding:12px 26px;background:var(--orange);color:#fff;box-shadow:5px 5px 0 var(--ink);width:max-content;transition:transform .15s,box-shadow .15s}
+.btn.press{transform:translate(4px,4px);box-shadow:1px 1px 0 var(--ink)}
+.chips{display:flex;flex-wrap:wrap;gap:12px}
+.chip{border:3px solid var(--ink);border-radius:999px;padding:10px 20px;font-weight:700;font-size:clamp(1rem,1.8vw,1.4rem);background:#fff;transition:background .4s,color .4s,transform .4s}
+.chip.lit{background:var(--ink);color:var(--cream);transform:scale(1.06)}
+.job{display:flex;justify-content:space-between;align-items:center;gap:16px}
+.match{font-family:"Archivo Black";background:var(--teal);color:#fff;border-radius:999px;padding:6px 16px;font-size:clamp(.9rem,1.6vw,1.3rem);white-space:nowrap}
+.fn{font-size:.8rem;font-weight:800;color:var(--blue);text-transform:uppercase;letter-spacing:.06em}
+.gold{color:var(--orange)}
+.caption{position:fixed;left:0;right:0;bottom:104px;text-align:center;font-size:clamp(.9rem,1.5vw,1.15rem);color:var(--muted);padding:0 20px;min-height:1.4em}
+.bar{position:fixed;left:0;right:0;bottom:0;height:92px;background:var(--ink);color:var(--cream);display:flex;align-items:center;gap:12px;padding:0 20px;flex-wrap:wrap}
+.bar button{font:inherit;font-weight:800;border:2px solid var(--cream);border-radius:10px;padding:8px 16px;background:var(--yellow);color:var(--ink);cursor:pointer}
+.bar button.alt{background:transparent;color:var(--cream)}
+.bar select{font:inherit;padding:7px 10px;border-radius:10px;border:2px solid var(--cream);background:var(--ink);color:var(--cream);max-width:260px}
+.prog{flex:1;min-width:120px;height:8px;background:#333;border-radius:999px;overflow:hidden}
+.prog div{height:100%;width:0;background:var(--orange);transition:width .4s}
+.hint{font-size:.8rem;opacity:.7}
+</style>
+</head>
+<body>
+<div class="sun" id="sun"></div>
+<div class="stage" id="stage">
+
+  <section class="scene" data-s="0">
+    <span class="tag">MAKE SF BETTER · HACK NIGHT · NOV 3</span>
+    <h1 class="big">THE GOLD RUSH<br>OF <span class="gold">HAPPINESS</span></h1>
+    <p class="lead">A vibrant, peaceful San Francisco, built with Mistral AI and Elastic.</p>
+  </section>
+
+  <section class="scene" data-s="1">
+    <h2 class="mid">Our mission is simple.</h2>
+    <p class="lead">Anyone who wants to work can find work that helps the city thrive.</p>
+    <div class="row">
+      <div class="box"><b>422,958</b><span>homes</span><small>SF Planning, end of 2025</small></div>
+      <div class="box"><b>97K</b><span>registered businesses</span><small>SF Treasurer, 2026</small></div>
+      <div class="box"><b>~13,000</b><span>city street blocks</span><small>SF Public Works, Jan 2026</small></div>
+    </div>
+  </section>
+
+  <section class="scene" data-s="2">
+    <h2 class="mid">The city runs on people.</h2>
+    <div class="row">
+      <div class="box"><span class="emoji">🍲</span><span>Food</span></div>
+      <div class="box"><span class="emoji">🧒</span><span>Child care</span></div>
+      <div class="box"><span class="emoji">🧓</span><span>Elder care</span></div>
+      <div class="box"><span class="emoji">🏠</span><span>Homes & shelter</span></div>
+      <div class="box"><span class="emoji">🧹</span><span>Clean streets</span></div>
+      <div class="box"><span class="emoji">🚋</span><span>Transit</span></div>
+    </div>
+  </section>
+
+  <section class="scene" data-s="3">
+    <h2 class="mid">People, not resumes.</h2>
+    <p class="lead">Tell us what you can do, in your own words, in your own language.</p>
+    <div class="input"><span id="typed"></span><span class="caret"></span></div>
+    <div class="btn" id="matchBtn">Match me</div>
+  </section>
+
+  <section class="scene" data-s="4">
+    <h2 class="mid">Abilities, understood.</h2>
+    <p class="lead">"I drive, I speak Spanish, I worked in a kitchen."</p>
+    <div class="chips" id="chips">
+      <span class="chip">Physical work</span><span class="chip" data-lit>Driving</span><span class="chip">Talking with people</span>
+      <span class="chip">Caring for others</span><span class="chip" data-lit>Cooking / food</span><span class="chip">Fixing & building</span>
+      <span class="chip" data-lit>Speaks a second language</span><span class="chip">Teaching</span><span class="chip">Coding</span>
+    </div>
+  </section>
+
+  <section class="scene" data-s="5">
+    <h2 class="mid">Real paths, in seconds.</h2>
+    <div class="box job"><div><div class="fn">Transit & mobility</div><b style="font-size:clamp(1.3rem,2.6vw,2.1rem)">Rideshare / delivery driver</b><small>Starts in days · Weekly or instant payout</small></div><span class="match">100% match</span></div>
+    <div class="box job"><div><div class="fn">Food</div><b style="font-size:clamp(1.3rem,2.6vw,2.1rem)">Line cook / prep cook</b><small>Starts in days · Weekly payroll + tips</small></div><span class="match">50% match</span></div>
+    <div class="box job"><div><div class="fn">Transit & mobility</div><b style="font-size:clamp(1.3rem,2.6vw,2.1rem)">Station & stop ambassador</b><small>1–2 weeks · Weekly payroll</small></div><span class="match">33% match</span></div>
+  </section>
+
+  <section class="scene" data-s="6">
+    <h2 class="mid">Removing the friction.</h2>
+    <div class="row">
+      <div class="box"><b style="font-size:clamp(1.2rem,2.2vw,1.8rem)">One profile</b><span>not endless forms</span></div>
+      <div class="box"><b style="font-size:clamp(1.2rem,2.2vw,1.8rem)">Skills over degrees</b><span>real requirements only</span></div>
+      <div class="box"><b style="font-size:clamp(1.2rem,2.2vw,1.8rem)">Fair chance</b><span>lived experience counts</span></div>
+      <div class="box"><b style="font-size:clamp(1.2rem,2.2vw,1.8rem)">Paid this week</b><span>not in ninety days</span></div>
+    </div>
+  </section>
+
+  <section class="scene" data-s="7">
+    <h2 class="mid">Work that makes the city better.</h2>
+    <div class="row">
+      <div class="box"><span class="emoji">🍲</span><b style="font-size:clamp(1.2rem,2.2vw,1.8rem)">Food</b><span>cooks, meal programs, pop-up vendors</span></div>
+      <div class="box"><span class="emoji">🤝</span><b style="font-size:clamp(1.2rem,2.2vw,1.8rem)">Child & elder care</b><span>aides, companions, tutors</span></div>
+      <div class="box"><span class="emoji">🏠</span><b style="font-size:clamp(1.2rem,2.2vw,1.8rem)">Homes & shelter</b><span>maintenance, trades, supportive housing</span></div>
+    </div>
+  </section>
+
+  <section class="scene" data-s="8">
+    <h2 class="mid">What's next.</h2>
+    <div class="row">
+      <div class="box"><b style="font-size:clamp(1.2rem,2.2vw,1.8rem)">Mistral AI</b><span>reads every language, writes every start plan</span></div>
+      <div class="box"><b style="font-size:clamp(1.2rem,2.2vw,1.8rem)">Elastic</b><span>searches every real opening, instantly</span></div>
+      <div class="box"><b style="font-size:clamp(1.2rem,2.2vw,1.8rem)">Less red tape</b><span>simpler permits, faster pay</span></div>
+    </div>
+    <p class="lead" style="font-size:clamp(.95rem,1.6vw,1.2rem);color:var(--muted)">Tonight's demo runs on our offline engine, which keeps working even when the API is rate-limited.</p>
+  </section>
+
+  <section class="scene" data-s="9">
+    <h1 class="big">A MILLION PEOPLE.<br>MANY LANGUAGES.<br><span class="gold">ONE CITY.</span></h1>
+    <p class="lead">The gold rush of happiness starts here.</p>
+  </section>
+  <section class="scene" data-s="10">
+    <h1 class="big">THANK <span class="gold">YOU.</span></h1>
+    <p class="lead" style="font-size:clamp(1.3rem,2.8vw,2.2rem);font-weight:700">"I believe in this mission."</p>
+    <p class="lead">Naveena Swamy · November 3, 2026</p>
+    <div class="row" style="max-width:900px">
+      <div class="box"><span>With gratitude to our sponsors</span><b style="font-size:clamp(1.3rem,2.6vw,2.1rem)">Elastic &amp; Mistral AI</b><small>for making Make SF Better possible</small></div>
+    </div>
+  </section>
+</div>
+
+<div class="stripe"></div>
+<div class="caption" id="caption"></div>
+<div class="bar">
+  <button id="play">▶ Play</button>
+  <button class="alt" id="restart">↺ Restart</button>
+  <select id="voice" title="Narrator voice"></select>
+  <div class="prog"><div id="prog"></div></div>
+  <span class="hint">Space = play/pause · F = full screen</span>
+</div>
+
+<script>
+const SCRIPT=[
+ {s:0,t:"In 1849, people came to San Francisco chasing gold. Tonight, we're starting a different gold rush: a gold rush of happiness, for everyone."},
+ {s:1,t:"Our mission is simple. Use Mistral AI and Elastic to build a vibrant, peaceful San Francisco, where anyone who wants to work can find work that helps the city thrive."},
+ {s:2,t:"The city already runs on people: those who cook our food, care for our children and our elders, keep our homes standing, and our streets clean."},
+ {s:3,t:"So we start with people, not resumes. Tell us what you can do, in your own words, in your own language.",fx:"type"},
+ {s:3,t:"Manejo un carro, hablo español, y trabajé en una cocina.",lang:"es",fx:"press"},
+ {s:4,t:"I drive. I speak Spanish. I worked in a kitchen. And the abilities light up.",fx:"chips"},
+ {s:5,t:"In seconds, that person sees real paths: driver, line cook, station ambassador. Each one shows how fast they can start, and how they get paid."},
+ {s:6,t:"And we remove what stands in the way: one profile instead of endless forms, skills over degrees, fair-chance hiring, and pay that arrives this week, not in ninety days."},
+ {s:7,t:"Food. Child and elder care. Homes that offer rent and shelter. Every role here makes the city work better."},
+ {s:8,t:"Next, Mistral reads every language and writes every start plan, Elastic searches every real opening, and we cut the red tape that slows people down."},
+ {s:9,t:"Our goal is a million people, speaking many languages, serving the city they love. The gold rush of happiness starts here."},
+ {s:10,t:"Thank you. I believe in this mission. Naveena Swamy, November third, twenty twenty-six. A heartfelt thank you to our sponsors, Elastic and Mistral AI, for this opportunity to make San Francisco better."}
+];
+const SENTENCE="Manejo un carro, hablo español y trabajé en una cocina.";
+const synth=window.speechSynthesis;
+let voices=[],idx=0,playing=false,timer=null;
+const FEMALE=/samantha|ava|zoe|allison|susan|karen|moira|tessa|serena|victoria|fiona|kate|nicky|female|google us english|jenny|aria/i;
+const ES=/paulina|mónica|monica|marisol|esperanza|soledad|google español/i;
+
+function loadVoices(){
+  voices=(synth?synth.getVoices():[]);
+  const en=voices.filter(v=>/^en/i.test(v.lang));
+  const sel=document.getElementById('voice');sel.innerHTML='';
+  const sorted=[...en.filter(v=>FEMALE.test(v.name)),...en.filter(v=>!FEMALE.test(v.name))];
+  sorted.forEach(v=>{const o=document.createElement('option');o.value=v.name;o.textContent=v.name+' ('+v.lang+')';sel.appendChild(o)});
+  if(!sorted.length){const o=document.createElement('option');o.textContent='No voices: captions only';sel.appendChild(o)}
+}
+if(synth){loadVoices();synth.onvoiceschanged=loadVoices}
+
+function show(s){document.querySelectorAll('.scene').forEach(el=>el.classList.toggle('on',+el.dataset.s===s));document.getElementById('sun').style.transform=`scale(${1+s*.04}) rotate(${s*6}deg)`}
+function fx(name){
+  if(name==='type'){const el=document.getElementById('typed');el.textContent='';let i=0;const iv=setInterval(()=>{el.textContent=SENTENCE.slice(0,++i);if(i>=SENTENCE.length)clearInterval(iv)},55)}
+  if(name==='press'){const b=document.getElementById('matchBtn');setTimeout(()=>{b.classList.add('press');setTimeout(()=>b.classList.remove('press'),300)},1600)}
+  if(name==='chips'){document.querySelectorAll('#chips .chip').forEach(c=>c.classList.remove('lit'));[...document.querySelectorAll('#chips [data-lit]')].forEach((c,i)=>setTimeout(()=>c.classList.add('lit'),700+i*600))}
+}
+function step(){
+  if(!playing)return;
+  if(idx>=SCRIPT.length){playing=false;document.getElementById('play').textContent='▶ Play';return}
+  const line=SCRIPT[idx];show(line.s);if(line.fx)fx(line.fx);
+  document.getElementById('caption').textContent=line.t;
+  document.getElementById('prog').style.width=((idx+1)/SCRIPT.length*100)+'%';
+  const next=()=>{idx++;timer=setTimeout(step,500)};
+  if(synth&&voices.length){
+    const u=new SpeechSynthesisUtterance(line.t);
+    if(line.lang==='es'){const v=voices.find(v=>/^es/i.test(v.lang)&&ES.test(v.name))||voices.find(v=>/^es/i.test(v.lang));if(v){u.voice=v;u.lang=v.lang}}
+    else{const v=voices.find(v=>v.name===document.getElementById('voice').value);if(v){u.voice=v;u.lang=v.lang}}
+    u.rate=line.lang==='es'?.95:1.0;u.onend=next;u.onerror=next;synth.speak(u);
+  }else{timer=setTimeout(next,Math.max(2500,line.t.split(' ').length*380))}
+}
+function play(){
+  if(playing){playing=false;synth&&synth.pause();clearTimeout(timer);document.getElementById('play').textContent='▶ Resume';return}
+  playing=true;document.getElementById('play').textContent='❚❚ Pause';
+  if(synth&&synth.paused){synth.resume()}else{step()}
+}
+function restart(){playing=false;clearTimeout(timer);synth&&synth.cancel();idx=0;show(0);document.getElementById('caption').textContent='';document.getElementById('prog').style.width='0';document.getElementById('play').textContent='▶ Play'}
+document.getElementById('play').onclick=play;
+document.getElementById('restart').onclick=restart;
+document.addEventListener('keydown',e=>{if(e.code==='Space'){e.preventDefault();play()}if(e.key==='f'||e.key==='F'){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}});
+show(0);
+</script>
+</body>
+</html>
